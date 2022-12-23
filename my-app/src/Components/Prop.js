@@ -1,6 +1,4 @@
 import * as React from "react";
-import { useState } from "react";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -11,14 +9,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import {
-  Map,
-  MapContainer,
-  TileLayer,
-  useMap,
-  Marker,
-  Popup,
-} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import { Mao, MapContainer, TileLayer, useMap } from "react-leaflet";
 import * as L from "leaflet";
 
 export default function Prop(props) {
@@ -29,68 +21,37 @@ export default function Prop(props) {
   const handleTypeChange = (event) => {
     props.setPtype(event.target.value);
   };
-  //var map = L.map("map").setView([51.505, -0.09], 13);
-  // function handleChangeLocation(lat, lng) {
-  //   setLocation({ lat: lat, lng: lng });
-  // }
-//   let mapOptions = {
-//     center : [51.958, 9.14],
-//     zoom:10
-//   }
-//   let map = new L.map('map', mapOptions);
 
-//   let layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-// map.addLayer(layer);
-//   let marker = null;
-//   map.on('click', (event)=> {
-
-//     if(marker !== null){
-//         map.removeLayer(marker);
-//     }
-
-//     marker = L.marker([event.latlng.lat , event.latlng.lng]).addTo(map);
-
-//     lat = event.latlng.lat;
-//     lng = event.latlng.lng;
-    
-// })
-//   function handleChangeLat(lat) {
-//     setLocation({ lat: lat });
-//   }
-//   function handleChangeLng(lng) {
-//     setLocation({ lng: lng });
-//   }
-//   function handleChangeZoom(newZoom) {
-//     setZoom(newZoom);
-//   }
-
-//   function handleResetLocation() {
-//     setDefaultLocation({ ...DefaultLocation });
-//     setZoom(DefaultZoom);
-//   }
   return (
     <div className="row">
       <div>
         <FormControlLabel
-          control={<Checkbox checked={checked} onChange={handleCheckChange} />}
+          control={
+            <Checkbox
+              checked={checked}
+              onChange={handleCheckChange}
+              style={{
+                color: "#000080",
+              }}
+            />
+          }
           label="Properties"
         />
         <div className="row">
           <div className="col">
             {checked && (
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">
-                  Select Key Type
-                </InputLabel>
+              <FormControl variant="standard" sx={{ minWidth: 120 }}>
+                <label>Select key type</label>
                 <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
                   value={props.Ptype}
                   onChange={handleTypeChange}
-                  label="Select Key Type"
+                  displayEmpty
+                  variant="outlined"
+                  sx={ {marginTop: 1.5}}
                 >
-                  <MenuItem value="">
-                    <em>None</em>
+                  <MenuItem value="" disabled hidden>
+                    {" "}
+                    Select type
                   </MenuItem>
                   <MenuItem value={"time"}>Time</MenuItem>
                   <MenuItem value={"location"}>Location</MenuItem>
@@ -99,38 +60,38 @@ export default function Prop(props) {
             )}
           </div>
           <div className="col">
-            {props.Ptype === "time" && (
+            {checked && props.Ptype === "time" && (
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Stack spacing={3}>
                   <div class="row">
                     <div class="col">
+                      <label>Start Time</label>
                       <TimePicker
                         ampm={false}
                         openTo="hours"
                         views={["hours", "minutes", "seconds"]}
                         inputFormat="HH:mm:ss"
                         mask="__:__:__"
-                        label="Start Time"
                         value={props.startTime}
                         onChange={(newValue) => {
                           props.setStartTime(newValue);
                         }}
-                        renderInput={(params) => <TextField {...params} />}
+                        renderInput={(params) => <TextField {...params} sx={{ mt: 1.5 }}/>}
                       />
                     </div>
                     <div className="col">
-                      <TimePicker
+                      <label>End Time</label>
+                      <TimePicker  
                         ampm={false}
                         openTo="hours"
                         views={["hours", "minutes", "seconds"]}
                         inputFormat="HH:mm:ss"
                         mask="__:__:__"
-                        label="End Time"
                         value={props.endTime}
                         onChange={(newValue) => {
                           props.setEndTime(newValue);
                         }}
-                        renderInput={(params) => <TextField {...params} />}
+                        renderInput={(params) => <TextField {...params} sx={{ mt: 1.5 }}/>}
                       />
                     </div>
                   </div>
@@ -139,39 +100,7 @@ export default function Prop(props) {
             )}
           </div>
           <div className="col">
-            {props.Ptype === "location" && (
-              <div></div>
-          //     <div>
-          //       <TextField
-          //   id="outlined-name"
-          //   label=" Node Name"
-          //   value={lat}
-          //   onChange={handleChangeLat}
-          // />
-          // <TextField
-          //   id="outlined-name"
-          //   label=" Node Name"
-          //   value={lng}
-          //   onChange={handleChangeLng}
-          // />
-          // <div id="map"></div>
-          //     </div>
-              // <MapContainer
-              //   center={[51.505, -0.09]}
-              //   zoom={13}
-              //   scrollWheelZoom={false}
-              // >
-              //   <TileLayer
-              //     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              //     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              //   />
-              //   <Marker position={[51.505, -0.09]}>
-              //     <Popup>
-              //       A pretty CSS3 popup. <br /> Easily customizable.
-              //     </Popup>
-              //   </Marker>
-              // </MapContainer>
-            )}
+            {checked && props.Ptype === "location" && <div></div>}
           </div>
         </div>
       </div>
